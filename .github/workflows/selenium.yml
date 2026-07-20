@@ -24,11 +24,14 @@ jobs:
         with:
           python-version: "3.12"
 
-      - name: Install Chromium
+      - name: Install Google Chrome
         run: |
           sudo apt-get update
-          sudo apt-get install -y chromium-browser chromium-chromedriver
-          which chromium-browser || true
+          sudo apt-get install -y wget curl unzip
+          wget -q https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
+          sudo apt-get install -y ./google-chrome-stable_current_amd64.deb
+          which google-chrome
+          google-chrome --version
 
       - name: Install Dependencies
         run: |
@@ -37,8 +40,6 @@ jobs:
           python -m pip install --upgrade selenium==4.46.0 webdriver-manager
           echo "--- pip show selenium ---"
           python -m pip show selenium || true
-          echo "--- pip list (first 200 lines) ---"
-          python -m pip list | sed -n '1,200p'
 
       - name: Verify environment
         run: |
@@ -47,10 +48,12 @@ jobs:
           python -m pip --version
           echo "--- pytest version ---"
           python -m pytest --version || true
-          echo "--- pip packages summary ---"
-          python -m pip show pytest-html || true
-          python -m pip show selenium || true
-          python -m pip freeze | sed -n '1,200p'
+          echo "--- Google Chrome ---"
+          google-chrome --version || true
+
+      - name: Create output directories
+        run: |
+          mkdir -p screenshots reports
 
       - name: Run Selenium Tests
         run: |
