@@ -13,7 +13,6 @@ on:
 
 jobs:
   selenium-tests:
-
     runs-on: ubuntu-latest
 
     steps:
@@ -25,14 +24,41 @@ jobs:
         with:
           python-version: "3.12"
 
+      - name: Install Chromium
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y chromium-browser chromium-chromedriver
+          which chromium-browser || true
+
       - name: Install Dependencies
         run: |
+          python -m venv venv
+          source venv/bin/activate
           python -m pip install --upgrade pip
-          pip install -r requirements.txt
+          python -m pip install -r requirements.txt
+          python -m pip install --upgrade selenium==4.46.0 webdriver-manager
+          echo "--- pip show selenium ---"
+          python -m pip show selenium || true
+          echo "--- pip list (first 200 lines) ---"
+          python -m pip list | sed -n '1,200p'
+
+      - name: Verify environment
+        run: |
+          source venv/bin/activate
+          python -V
+          which python || true
+          python -m pip --version
+          echo "--- pytest version ---"
+          python -m pytest --version || true
+          echo "--- pip packages summary ---"
+          python -m pip show pytest-html || true
+          python -m pip show selenium || true
+          python -m pip freeze | sed -n '1,200p'
 
       - name: Run Selenium Tests
         run: |
-          pytest -v
+          source venv/bin/activate
+          python -m pytest -v
 
       - name: Upload Screenshots
         if: always()
