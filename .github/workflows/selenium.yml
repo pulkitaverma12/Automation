@@ -34,17 +34,27 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           python -m pip install -r requirements.txt
-          python -m pip show selenium || python -m pip install selenium
-          python -m pip list
+          python -m pip install --upgrade selenium==4.46.0 webdriver-manager
+          echo "--- pip show selenium ---"
+          python -m pip show selenium || true
+          echo "--- pip list (first 200 lines) ---"
+          python -m pip list | sed -n '1,200p'
 
-      - name: Verify pytest-html
+      - name: Verify environment
         run: |
-          pytest --version
-          pip show pytest-html
+          python -V
+          which python || true
+          python -m pip --version
+          echo "--- pytest version ---"
+          python -m pytest --version || true
+          echo "--- pip packages summary ---"
+          python -m pip show pytest-html || true
+          python -m pip show selenium || true
+          python -m pip freeze | sed -n '1,200p'
 
       - name: Run Selenium Tests
         run: |
-          pytest -v
+          python -m pytest -v
 
       - name: Upload Screenshots
         if: always()
