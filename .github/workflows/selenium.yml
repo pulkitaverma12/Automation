@@ -5,19 +5,17 @@ on:
 
   push:
     branches:
-      - main
+      - master
 
   pull_request:
     branches:
-      - main
+      - master
 
 jobs:
   selenium-tests:
-
     runs-on: ubuntu-latest
 
     steps:
-
       - name: Checkout Repository
         uses: actions/checkout@v4
 
@@ -31,7 +29,7 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-            - name: Verify pytest-html
+      - name: Verify pytest-html
         run: |
           pytest --version
           pip show pytest-html
