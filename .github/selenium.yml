@@ -24,16 +24,13 @@ jobs:
         with:
           python-version: "3.12"
 
-      - name: Install Chromium
+      - name: Install Google Chrome
         run: |
           sudo apt-get update
-          sudo apt-get install -y chromium-browser chromium-chromedriver
-          which chromium-browser || true
+          sudo apt-get install -y google-chrome-stable
 
       - name: Install Dependencies
         run: |
-          python -m venv venv
-          source venv/bin/activate
           python -m pip install --upgrade pip
           python -m pip install -r requirements.txt
           python -m pip install --upgrade selenium==4.46.0 webdriver-manager
@@ -44,12 +41,14 @@ jobs:
 
       - name: Verify environment
         run: |
-          source venv/bin/activate
           python -V
           which python || true
           python -m pip --version
           echo "--- pytest version ---"
           python -m pytest --version || true
+          echo "--- Google Chrome ---"
+          which google-chrome || true
+          google-chrome --version || true
           echo "--- pip packages summary ---"
           python -m pip show pytest-html || true
           python -m pip show selenium || true
@@ -57,7 +56,6 @@ jobs:
 
       - name: Run Selenium Tests
         run: |
-          source venv/bin/activate
           python -m pytest -v
 
       - name: Upload Screenshots
