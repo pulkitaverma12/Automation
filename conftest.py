@@ -1,12 +1,22 @@
 import pytest
 from selenium import webdriver
+from selenium.webdriver.chrome.options import Options
 
-# decorator 
+
 @pytest.fixture
-# setup and teardown
 def driver():
-    driver = webdriver.Chrome()
+
+    options = Options()
+
+    options.add_argument("--headless=new")
+    options.add_argument("--no-sandbox")
+    options.add_argument("--disable-dev-shm-usage")
+    options.add_argument("--window-size=1920,1080")
+
+    driver = webdriver.Chrome(options=options)
+
     driver.maximize_window()
-    # yield is for thora ruk ja pehle dusra kam ho raha fir karenge 
+
     yield driver
+
     driver.quit()
